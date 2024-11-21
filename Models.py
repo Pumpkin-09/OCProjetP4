@@ -1,38 +1,42 @@
-from dataclasses import dataclass, field
 from datetime import date
 
-@dataclass
+
+
 class Joueur:
-    nom_de_famille: str
-    prenom: str
-    date_de_naissance: date
-    numero_ine: str
-    nombre_de_points: float = 0
+
+    def __init__(self, nom_de_famille, prenom, date_de_naissance, numero_ine, nombre_de_points):
+            
+        self.nom_de_famille = nom_de_famille
+        self.prenom = prenom
+        self.date_de_naissance = date_de_naissance
+        self.numero_ine = numero_ine
+        self.nombre_de_points = nombre_de_points = 0.0
 
 
-
-
-
-
-@dataclass
 class Tournoi:
-    nom: str
-    lieu: str
-    date_de_debut: date
-    date_de_fin: date
-    nombre_de_tours: int = 4
-    tour_actuel: str
-    liste_des_tours: str
-    liste_joueurs: str
-    remarque: str
+
+    def __init__(self, nom, lieu, date_de_debut, date_de_fin, nombre_de_tours, tour_actuel, liste_des_tours, liste_des_joueurs, remarque):
+     
+        self.nom = nom
+        self.lieu = lieu
+        self.date_de_debut = date_de_debut = date
+        self.date_de_fin = date_de_fin = date
+        self.nombre_de_tours = nombre_de_tours = 4
+        self.tour_actuel = tour_actuel
+        self.liste_des_tours = liste_des_tours
+        self.liste_des_joueurs = liste_des_joueurs
+        self.remarque = remarque
 
 
-@dataclass
 class Match:
-    joueur_1: Joueur
-    joueur_2: Joueur
-    score_1: int = 0
-    score_2: int = 0
+
+    def __init__(self, joueur_1, joueur_2, score_1, score_2):
+
+        self.joueur_1 = joueur_1
+        self.joueur_2 = joueur_2
+        self.score_1 = score_1 = 0
+        self.score_2 = score_2 = 0
+
 
     def ajouter_score(self, Joueur, score):
         if self.joueur_1.gagnant:
@@ -49,13 +53,12 @@ class Match:
         return tuple(resultat)
 
 
-
-
-@dataclass
 class Tours:
 
-    numero_du_tours: str
-    matchs: Match[str] = field(default_factory=list)
+    def __init__ (self, numero_du_tour, match):
+
+        self.numero_du_tour = numero_du_tour
+        self.match = match
 
 
 
