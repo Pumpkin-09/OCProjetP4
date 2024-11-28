@@ -5,13 +5,13 @@ import json
 
 class Joueur:
 
-    def __init__(self, nom_de_famille, prenom, date_de_naissance, numero_ine, liste_d_adversaire, nombre_de_points=0.0):
+    def __init__(self, nom_de_famille, prenom, date_de_naissance, numero_ine, liste_d_adversaire=[], nombre_de_points=0.0):
             
         self.nom_de_famille = nom_de_famille
         self.prenom = prenom
         self.date_de_naissance = date_de_naissance
         self.numero_ine = numero_ine
-        self.liste_d_adversaire = liste_d_adversaire = []
+        self.liste_d_adversaire = liste_d_adversaire
         self.nombre_de_points = nombre_de_points
 
 
@@ -95,14 +95,18 @@ with open(fichier_joueurs, "r") as f:
     donnees_joueurs = json.load(f)
 
     liste_joueurs = []
-    for j in donnees_joueurs:
-        nom = j.get("nom")
-        prenom = j.get("prenom")
-        date_de_naissance = j.get("date de naissance")
-        numero_ine = j.get("numero ine")
+    for cle, valeurs in donnees_joueurs.items():
+        nom = valeurs.get("nom")
+        prenom = valeurs.get("prenom")
+        date_de_naissance = valeurs.get("date de naissance")
+        numero_ine = valeurs.get("numero ine")
 
         joueur = Joueur(nom, prenom, date_de_naissance, numero_ine)
         liste_joueurs.append(joueur)
+
+tour = Tour(1)
+tour.randomiseur_tour1(liste_joueurs)
+print(tour)
 
 
 
