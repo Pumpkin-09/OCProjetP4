@@ -17,33 +17,16 @@ class Joueur:
 
 class Tournoi:
 
-    def __init__(self, nom, lieu, date_de_debut, date_de_fin, tour_actuel, liste_des_tours, liste_des_joueurs, remarque, nombre_de_tours=4):
+    def __init__(self, nom, lieu, date_de_debut, date_de_fin, remarque, nombre_de_tours=4, liste_des_joueurs=[], tour_actuel=0, liste_des_tours=[]):
         self.nom = nom
         self.lieu = lieu
         self.date_de_debut = date_de_debut
         self.date_de_fin = date_de_fin
-        self.tour_actuel = tour_actuel
-        self.liste_des_tours = liste_des_tours
-        self.liste_des_joueurs = liste_des_joueurs
         self.remarque = remarque
         self.nombre_de_tours = nombre_de_tours
-    
-    
-    def enregistrement_resultat(self):
-        fichier = "joueurs.json"
-        with open(fichier, "r") as f:
-            settings = json.load(f)
-        for enregistrement in self.liste_des_joueurs:
-            settings[enregistrement.numero_ine]["nombre_de_points"] += enregistrement.nombre_de_points            
-            with open(fichier, "w") as f:
-                json.dump(settings, f, indent=4)
-
-
-class Resultat(Enum):
-
-    JOUEUR_1_GAGNANT = 1
-    JOUEUR_2_GAGNANT = 2
-    MATCH_NUL = 3
+        self.liste_des_joueurs = liste_des_joueurs
+        self.tour_actuel = tour_actuel
+        self.liste_des_tours = liste_des_tours 
 
 
 class Match:
@@ -53,16 +36,13 @@ class Match:
         self.joueur_2 = liste_joueur[1]
         self.resultat = None
 
-    def set_resultat(self, resultat: Resultat):
-        self.resultat =  resultat
-
-    def attribution_point(self):
-        if self.resultat == Resultat.JOUEUR_1_GAGNANT:
+    def attribution_point(self, resultat):
+        if resultat == "1":
             self.joueur_1.nombre_de_points += 1
             score_1 = 1
             score_2 = 0
         
-        elif self.resultat == Resultat.JOUEUR_2_GAGNANT:
+        elif resultat == "2":
             self.joueur_2.nombre_de_points += 1
             score_1 = 0
             score_2 = 1
@@ -110,3 +90,12 @@ class Tour:
                 del liste_travail[0]
                 i = 1
         return liste_des_matchs
+
+    def enregistrement_resultat(self):
+        fichier = "joueurs.json"
+        with open(fichier, "r") as f:
+            settings = json.load(f)
+        for enregistrement in self.liste_de_joueurs:
+            settings[enregistrement.numero_ine]["nombre_de_points"] += enregistrement.nombre_de_points            
+            with open(fichier, "w") as f:
+                json.dump(settings, f, indent=4)
