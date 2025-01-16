@@ -11,6 +11,9 @@ class Joueur:
         self.prenom = prenom
         self.date_naissance = date_naissance
         self.score = score
+    
+    def __repr__(self):
+        return (f"{self.nom} {self.prenom}, date de naissance:{self.date_naissance} numero INE:{self.numero_ine}\n")
 
 
 class Tournoi:

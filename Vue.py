@@ -63,7 +63,7 @@ def nouveau_tournoi():
     if choix_remarque == "oui":
         remarque = input("Indiquez les remarques concernant ce tournoi:\n")
     else:
-        remarque = " "
+        remarque = "Aucune"
 
     choix_nombre_tour = input ("Le nombre de tour pour le tournoi est par defaut de 4.\nVoulez vous changer le nombre de tour?\nSaisisez Oui ou Non\n")
     if choix_nombre_tour == "oui":
@@ -131,7 +131,7 @@ def recherche_tournoi(liste_tournois):
             print(f"{i} -> {liste}")
             i += 1
 
-        choix = int(input("\nEntrez le numero du fichier à sélectionner ou 0 pour quitter:"))
+        choix = int(input("\nEntrez le numero du fichier à sélectionner ou 0 pour quitter:\n"))
         
         while True:    
             if choix == 0:
@@ -149,6 +149,37 @@ def recherche_tournoi(liste_tournois):
         print("il n'y a aucun tournoi de disponible pour le moment.")
 
 
+def affichage_resumer(tournoi, liste_joueurs):
+    print(f"Liste des joueurs inscrit au tournoi {tournoi.nom} de {tournoi.lieu}:")
+    liste_triee = sorted(liste_joueurs, key=lambda joueur: joueur.nom)
+    for affichage_liste in liste_triee:
+        print(affichage_liste)
+    print(f"\nVoici le resumer tu tournoi:\n")
+    print(f"Nombre de tours: {tournoi.nombre_de_tours}\n")
+    print(f"Round effectués: {tournoi.tour_actuel}\n")
+    print(f"Renarque du directeur du tournoi: {tournoi.remarque}\n")
+    if tournoi.tour_actuel >=1:
+        print(f"Voici le résumer des Rounds du tournois:\n")
+        for round in tournoi.liste_des_tours["round"]:
+            print(round)
+
+
+
+
+
+def choix_resume():
+    print("Affichage des rapports:\n")
+    choix = input("Choisissez une option:\n1. Pour la liste de tous les joueurs\n2. Pour la liste de tous les tournois\n3. Pour quitter:\n") 
+    while True:
+        if choix == "1":
+            return choix
+        if choix == "2":
+            return choix
+        if choix == "3":
+            return choix
+        else:
+            print("Choix invalide, veuillez entrée un nombre compris entre 0 et 3")
+
 def fin_du_tournoi():
     pass
 
@@ -156,8 +187,8 @@ def fin_du_tournoi():
 def menu():
     while True:
         
-        print("\n\nMenu\nchoisissez une option:\n1. Création d'un nouveau joueur\n2. Création d'un nouveau tournoi\n3. Ajoute un joueur au tournoi:\n4. Lancer / reprendre le tournoi\n5. Quitter l'applicaiton du tournoi")
-        choix = input("Saisir 1, 2, 3, 4 ou 5:\n")
+        print("\n\nMenu\nchoisissez une option:\n1. Création d'un nouveau joueur\n2. Création d'un nouveau tournoi\n3. Ajoute un joueur au tournoi:\n4. Lancer / reprendre le tournoi\n5. Afficher le resumer d'un tournoi\n6. Quitter l'applicaiton du tournoi")
+        choix = input("Saisir 1, 2, 3, 4, 5 ou 6:\n")
         
         if choix == "1":
             clear_terminal()
@@ -180,6 +211,11 @@ def menu():
             return choix
 
         if choix == "5":
+            clear_terminal()
+            print("Résumer du tournoi:\n")
+            return choix
+
+        if choix == "6":
             clear_terminal()
             return choix
 

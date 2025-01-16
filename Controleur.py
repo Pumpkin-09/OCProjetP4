@@ -1,10 +1,9 @@
 import json
 import os
 import datetime
+from pprint import pprint
 from Models import Tour, Tournoi, Match, Joueur
-from Vue import quitter, menu, nouveau_joueur, nouveau_tournoi, recherche_tournoi, fin_du_tournoi, recherche_joueur, choix_gagants, affichage_resultat_match, affichage_round
-
-
+from Vue import quitter, affichage_resumer, choix_resume, menu, nouveau_joueur, nouveau_tournoi, recherche_tournoi, fin_du_tournoi, recherche_joueur, choix_gagants, affichage_resultat_match, affichage_round
 
 
 def enregistrement_joueur():
@@ -216,6 +215,34 @@ def continuer_tournoi(tournoi, liste_des_joueurs):
     fin_du_tournoi()
 
 
+def resume_tournoi():
+    while True:
+        choix = choix_resume()
+        if choix == "1":
+            liste_joueurs = []
+            fichier_joueurs = "joueurs.json"
+            with open(fichier_joueurs, "r") as f:
+                donnees_joueurs = json.load(f)
+            for ine_joueurs, donnees_joueur in donnees_joueurs.items():
+                joueur = Joueur(donnees_joueur["numero ine"], donnees_joueur["nom"], donnees_joueur["prenom"], donnees_joueur["date de naissance"])
+                liste_joueurs.append(joueur)
+            liste_triee = sorted(liste_joueurs, key=lambda joueur: joueur.nom)
+            for affichage in liste_triee:
+                print(affichage)
+
+        if choix == "2":
+            liste_tournois = liste_des_tournois()
+            if liste_tournois != None:
+                choix_tournoi = recherche_tournoi(liste_tournois)
+                if choix_tournoi == None:
+                    continue
+                tournoi = recuperation_donnees_tournoi(choix_tournoi)
+                liste_joueurs = recuperation_donnees_joueur(tournoi)
+                affichage_resumer(tournoi, liste_joueurs)
+        else:
+            return
+
+
 
 def main():
     tournoi = None
@@ -224,10 +251,12 @@ def main():
         choix_menu = menu() 
         if choix_menu == "1": # ajout d'un joueur à la base de donnees des joueurs
             enregistrement_joueur()
+        
         if choix_menu == "2": # création d'un nouveau tournoi
             creation_fichier_tournoi()
             if tournoi != None:
                 sauvegard_tournoi(tournoi)
+        
         if choix_menu == "3": # Ajoute un joueur au tournoi
             liste_tournois = liste_des_tournois()
             if liste_tournois != None and tournoi == None:
@@ -239,6 +268,7 @@ def main():
             liste_des_joueurs.append(joueurs)
             if tournoi != None:
                 sauvegard_tournoi(tournoi)
+        
         if choix_menu == "4": # lancement du tournoi
             liste_tournois = liste_des_tournois()
             if liste_tournois == None:
@@ -260,8 +290,11 @@ def main():
                 demarer_tournoi(tournoi, liste_des_joueurs)
             if tournoi.tour_actuel != tournoi.nombre_de_tours:
                 continuer_tournoi(tournoi, liste_des_joueurs)
+        
         if choix_menu == "5":
-            # fin de l'application
+            resume_tournoi()
+
+        if choix_menu == "6": # fin de l'application
             if tournoi != None:
                 sauvegard_tournoi(tournoi)
             return print("Au revoir")
