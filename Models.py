@@ -4,8 +4,12 @@ import random
 
 class Joueur:
 
-    def __init__(self, numero_ine, score=0.0):
+    def __init__(self, numero_ine, nom, prenom, date_naissance, score=0.0):
+
         self.numero_ine = numero_ine
+        self.nom = nom
+        self.prenom = prenom
+        self.date_naissance = date_naissance
         self.score = score
 
 
@@ -53,8 +57,9 @@ class Match:
 
 class Tour:
 
-    def __init__ (self, liste_des_joueurs):
+    def __init__ (self, liste_des_joueurs, non_joueur=0):
         self.liste_des_joueurs = liste_des_joueurs
+        self.non_joueur = non_joueur
     
     def randomiseur_tour1(self):
         random.shuffle(self.liste_des_joueurs)
@@ -66,16 +71,20 @@ class Tour:
         liste_travail = self.liste_des_joueurs.copy()
         if len(liste_travail)%2 != 0:
             impair = random.randint(0, len(liste_travail)-1)
+            self.non_joueur = liste_travail[impair]
             del liste_travail[impair]
         i = 1
         liste_de_matchs = []
         while len(liste_travail) > 0 and i != len(liste_travail):
-            if (liste_travail[0].numero_ine, liste_travail[i].numero_ine) or (liste_travail[i].numero_ine, liste_travail[0].numero_ine) in tournoi.liste_des_tours["adversaire"]:
-                i += 1
+            liste_1 = [liste_travail[0].numero_ine, liste_travail[i].numero_ine]
+            liste_2 = [liste_travail[i].numero_ine, liste_travail[0].numero_ine]
+            for ancien_match in tournoi.liste_des_tours["adversaire"]:
+                if liste_1 == ancien_match or liste_2 == ancien_match :
+                    i += 1
             else :
-                match = (liste_travail[0], liste_travail[i])
+                match = [liste_travail[0], liste_travail[i]]
                 liste_de_matchs.append(match)
-                tournoi.liste_des_tours["adversaire"].extend(liste_de_matchs[0].numero_ine, liste_de_matchs[i].numero_ine)
+                tournoi.liste_des_tours["adversaire"].append(liste_1)
                 del liste_travail[i]
                 del liste_travail[0]
                 i = 1

@@ -1,28 +1,15 @@
 import json
 import os
-import shutil
+import datetime
 from Models import Tour, Tournoi, Match, Joueur
-from Vue import quitter, menu, nouveau_joueur, nouveau_tournoi, tournoi_en_cours, fin_du_tournoi, recherche_joueur, choix_gagants, affichage_resultat_match, affichage_round
+from Vue import quitter, menu, nouveau_joueur, nouveau_tournoi, recherche_tournoi, fin_du_tournoi, recherche_joueur, choix_gagants, affichage_resultat_match, affichage_round
 
 
 
-def gestion_joueurs(tournoi):
-    liste_joueurs = []
-    for id_joueurs in tournoi.liste_des_joueurs:
-        joueur = Joueur(id_joueurs[0], id_joueurs[1])
-        liste_joueurs.append(joueur)
-    return liste_joueurs
 
-
-def base_donnees_joueurs():
-    fichier_joueurs = "joueurs.json"
-    with open(fichier_joueurs, "r") as f:
-        donnees_joueurs = json.load(f)
-    return donnees_joueurs
-
-
-def enregistrement_joueur(infos_joueur):
+def enregistrement_joueur():
     fichier = "joueurs.json"
+    infos_joueur = nouveau_joueur()
     if not os.path.exists(fichier):
         with open(fichier, "w")as f:
             json.dump({},f)
@@ -47,24 +34,12 @@ def enregistrement_joueur(infos_joueur):
             json.dump(settings, f, indent=4)
 
 
-def mis_a_jour_score(liste_des_joueurs, resultat):
-    for liste in liste_des_joueurs:
-        for score in resultat:
-            if score[0][0] in liste.numero_ine:
-                liste.nombre_de_points += score[0][1]
-            if score[1][0] in liste.numero_ine:
-                liste.nombre_de_points += score[1][1]
-            if score[0][0] and score [1][0] not in liste. numero_ine:
-                non_joueur = liste
-                return non_joueur
-
-
-def creation_fichier_tournoi(tournoi):
+def creation_fichier_tournoi():
     dossier = "tournoi"
     os.makedirs(dossier, exist_ok=True)
-
-    date_nom = tournoi.date_de_debut.replace("/", "")
-    fichier_tournoi = f"tournoi_{tournoi.nom}_{tournoi.lieu}_{date_nom}.json"
+    info_tournoi = nouveau_tournoi()
+    date_nom = info_tournoi[2].replace("/", "")
+    fichier_tournoi = f"tournoi_{info_tournoi[0]}_{info_tournoi[1]}_{date_nom}.json"
 
     chemin_fichier = os.path.join(dossier, fichier_tournoi)
 
@@ -74,6 +49,8 @@ def creation_fichier_tournoi(tournoi):
     
     with open(chemin_fichier, "r") as f:
         settings = json.load(f)
+
+    tournoi = Tournoi(info_tournoi[0], info_tournoi[1], info_tournoi[2], info_tournoi[3], info_tournoi[4], info_tournoi[5])
 
     donnees_tournoi = {
         "nom": tournoi.nom,
@@ -89,92 +66,74 @@ def creation_fichier_tournoi(tournoi):
     settings.update(donnees_tournoi)
     with open(chemin_fichier, "w") as f:
         json.dump(settings, f, indent=4)
+    return tournoi
+
+
+def ajout_joueur_tournoi(tournoi):
+    fichier_joueurs = "joueurs.json"
+    with open(fichier_joueurs, "r") as f:
+        donnees_joueurs = json.load(f)
+        nombre_joueur = len(tournoi.liste_des_joueurs)
+    numero_ine_joueur = recherche_joueur(donnees_joueurs, nombre_joueur)
+    for verification_joueur in tournoi.liste_des_joueurs:
+        if numero_ine_joueur == verification_joueur[0]:
+            return
+    donnees_joueur = donnees_joueurs[numero_ine_joueur]
+    joueur = Joueur(donnees_joueur["numero ine"], donnees_joueur["nom"], donnees_joueur["prenom"], donnees_joueur["date de naissance"])
+    joueur_liste = (joueur.numero_ine, joueur.score)
+    tournoi.liste_des_joueurs.append(joueur_liste)
+    return joueur
+
+
+def mis_a_jour_score(liste_des_joueurs, tournoi):
+    liste_joueurs = []
+    for joueurs in liste_des_joueurs:
+        joueur_score = [joueurs.numero_ine, joueurs.score]
+        liste_joueurs.append(joueur_score)
+    tournoi.liste_des_joueurs = liste_joueurs
+
+
+def recuperation_date_heure():
+    date_heure_actuel = datetime.datetime.now()
+    format_date_heure = date_heure_actuel.strftime("%d/%m/%Y %H:%M")
+    return format_date_heure
 
 
 def sauvegard_tournoi(tournoi):
+    # Remplacement des ancienne donnees liste des joueurs, tour actuel et liste des tours dans le fichier json
     dossier = "tournoi"
     date_nom = tournoi.date_de_debut.replace("/", "")
     fichier_tournoi = f"tournoi_{tournoi.nom}_{tournoi.lieu}_{date_nom}.json"
-
     chemin_fichier = os.path.join(dossier, fichier_tournoi)
 
-    if not os.path.exists(chemin_fichier):
-        with open(chemin_fichier, "w")as f:
-            json.dump({},f)
-    
     with open(chemin_fichier, "r") as f:
         settings = json.load(f)
 
-    settings["liste des joueurs"] = tournoi.liste_des_joueurs,
-    settings["tour actuel"] = tournoi.tour_actuel,
+    settings["liste des joueurs"] = tournoi.liste_des_joueurs
+    settings["tour actuel"] = tournoi.tour_actuel
     settings["liste des tours"] = tournoi.liste_des_tours
 
     with open(chemin_fichier, "w") as f:
         json.dump(settings, f, indent=4)
 
 
-def demarer_tournoi(tournoi):
-    #A MODIFIER!! rajouter l'heure de debut et de fin des rounds!
-    non_joueur = 0
-    infos_joueurs = base_donnees_joueurs()
-    liste_des_joueurs = gestion_joueurs(tournoi)
-    resultat = []
-    tournoi.tour_actuel[0] += 1
-    tour_en_cours = Tour(liste_des_joueurs)
-    tour_en_cours.randomiseur_tour1()
-    liste_de_match = tour_en_cours.association_joueurs(tournoi)
-    affichage_round(tournoi, liste_de_match, infos_joueurs)
-    for joueurs_match in liste_de_match:
-        matchs = Match(joueurs_match)
-        gagant = choix_gagants(joueurs_match, infos_joueurs)
-        resultat_match = matchs.attribution_point(gagant)
-        resultat.append(resultat_match)
-    non_joueur = mis_a_jour_score(liste_des_joueurs, resultat)
-    numero_round = f"round {tournoi.tour_actuel[0]}"
-    tournoi.liste_des_tours["round"][numero_round] = resultat
-    tournoi.liste_des_joueurs = liste_des_joueurs
-    affichage_resultat_match(tournoi, resultat, infos_joueurs, non_joueur)
-    sauvegard_tournoi(tournoi)
-    choix = quitter()
-    if choix:
-        raise SystemExit
-    else:
-        continuer_tournoi(tournoi)
-
-
-def continuer_tournoi(tournoi): # PAS FINI! rajouter la date et l'heure!
-    while tournoi.tour_actuel[0] < tournoi.nombre_de_tours:
-        non_joueur = 0
-        infos_joueurs = base_donnees_joueurs()
-        liste_des_joueurs = gestion_joueurs(tournoi)
-        resultat = []
-        tournoi.tour_actuel[0] += 1
-        tour_en_cours = Tour(liste_des_joueurs)
-        tour_en_cours.triage_par_points()
-        liste_de_match = tour_en_cours.association_joueurs(tournoi)
-        affichage_round(tournoi, liste_de_match, infos_joueurs)
-        for joueurs_match in liste_de_match:
-            matchs = Match(joueurs_match)
-            gagant = choix_gagants(joueurs_match, infos_joueurs)
-            resultat_match = matchs.attribution_point(gagant)
-            resultat.append(resultat_match)
-        non_joueur = mis_a_jour_score(liste_des_joueurs, resultat)
-        numero_round = f"round {tournoi.tour_actuel[0]}"
-        tournoi.liste_des_tours["round"][numero_round] = resultat
-        tournoi.liste_des_joueurs = liste_des_joueurs
-        affichage_resultat_match(tournoi, resultat, infos_joueurs, non_joueur)
-        sauvegard_tournoi(tournoi)
-        choix = quitter()
-        if choix:
-            raise SystemExit
-    fin_du_tournoi()
-
-
-def recuperation_donnees_tournoi():
+def liste_des_tournois():
+    # affiche une liste des fichier .json comprenant le mot "tournoi" dans leurs titre
     dossier = "tournoi"
-    lancement_tournoi = tournoi_en_cours()
-    fichier_tournoi = f"tournoi_{lancement_tournoi[0]}_{lancement_tournoi[1]}_{lancement_tournoi[2]}.json"
-    chemin_complet = os.path.join(dossier, fichier_tournoi)
+    fichier_json = []
+    if not os.path.exists(dossier):
+        return None
+    for fichier in os.listdir(dossier):
+        if fichier.endswith(".json") and "tournoi" in fichier.lower():
+            fichier_json.append(fichier)
+    if set(fichier_json) == 0:
+        return None
+    return fichier_json
+
+
+def recuperation_donnees_tournoi(choix_tournoi):
+    dossier = "tournoi"
+    chemin_complet = os.path.join(dossier, choix_tournoi)
 
     if not os.path.exists(chemin_complet):
         print("\nle tournoi n'as pas été trouvé.\nVeuillez verifier vos informations ou crée un nouveau tournoi.")
@@ -188,70 +147,123 @@ def recuperation_donnees_tournoi():
         return tournoi
 
 
+def recuperation_donnees_joueur(tournoi):
+    liste_joueurs = []
+    fichier_joueurs = "joueurs.json"
+    with open(fichier_joueurs, "r") as f:
+        donnees_joueurs = json.load(f)
+    
+    for joueurs in tournoi.liste_des_joueurs:
+        donnees_joueur = donnees_joueurs[joueurs[0]]
+        joueur = Joueur(donnees_joueur["numero ine"], donnees_joueur["nom"], donnees_joueur["prenom"], donnees_joueur["date de naissance"])
+        liste_joueurs.append(joueur)
+    return liste_joueurs
 
 
+def demarer_tournoi(tournoi, liste_des_joueurs):
+    non_joueur = None
+    resultat = []
+    tournoi.tour_actuel += 1
+    tour_en_cours = Tour(liste_des_joueurs)
+    tour_en_cours.randomiseur_tour1()
+    liste_de_match = tour_en_cours.association_joueurs(tournoi)
+    date_heure_debut = recuperation_date_heure()
+    affichage_round(tournoi, liste_de_match, date_heure_debut)
+    for joueurs_match in liste_de_match:
+        matchs = Match(joueurs_match)
+        gagant = choix_gagants(joueurs_match)
+        resultat_match = matchs.attribution_point(gagant)
+        resultat.append(resultat_match)
+    non_joueur = tour_en_cours.non_joueur
+    mis_a_jour_score(liste_des_joueurs, tournoi)
+    date_heure_fin = recuperation_date_heure()
+    numero_round = f"round {tournoi.tour_actuel}, \ndebut:{date_heure_debut}\nfin:{date_heure_fin}\n"
+    tournoi.liste_des_tours["round"][numero_round] = resultat
+    affichage_resultat_match(tournoi, liste_des_joueurs, resultat, date_heure_fin, non_joueur)
+    sauvegard_tournoi(tournoi)
+    choix = quitter()
+    if choix:
+        raise SystemExit
+    else:
+        pass
 
+
+def continuer_tournoi(tournoi, liste_des_joueurs):
+    while tournoi.tour_actuel < tournoi.nombre_de_tours:
+        non_joueur = None
+        resultat = []
+        tournoi.tour_actuel += 1
+        tour_en_cours = Tour(liste_des_joueurs)
+        tour_en_cours.triage_par_points()
+        liste_de_match = tour_en_cours.association_joueurs(tournoi)
+        date_heure_debut = recuperation_date_heure()
+        affichage_round(tournoi, liste_de_match, date_heure_debut)
+        for joueurs_match in liste_de_match:
+            matchs = Match(joueurs_match)
+            gagant = choix_gagants(joueurs_match)
+            resultat_match = matchs.attribution_point(gagant)
+            resultat.append(resultat_match)
+        non_joueur = tour_en_cours.non_joueur
+        mis_a_jour_score(liste_des_joueurs, tournoi)
+        date_heure_fin = recuperation_date_heure()
+        numero_round = f"round {tournoi.tour_actuel}, \ndebut:{date_heure_debut}\nfin:{date_heure_fin}\n"
+        tournoi.liste_des_tours["round"][numero_round] = resultat
+        affichage_resultat_match(tournoi, liste_des_joueurs, resultat, date_heure_fin, non_joueur)
+        sauvegard_tournoi(tournoi)
+        choix = quitter()
+        if choix:
+            raise SystemExit
+    fin_du_tournoi()
 
 
 
 def main():
-    joueurs = base_donnees_joueurs()
+    tournoi = None
+    liste_des_joueurs = []
     while True:
         choix_menu = menu() 
-        if choix_menu == "1":
-            #ajout d'un joueur à la base de donnees des joueurs
-            recherche = recherche_joueur(joueurs)
-            if recherche:
-                pass
-
-            else:
-                information_joueur = nouveau_joueur()
-                enregistrement_joueur(information_joueur)
-
-        if choix_menu == "2":
-            # création d'un nouveau tournoi
-            creation_tournoi = nouveau_tournoi()
-            tournoi = Tournoi(creation_tournoi[0], creation_tournoi[1], creation_tournoi[2], creation_tournoi[3], creation_tournoi[4], creation_tournoi[5])
-            creation_fichier_tournoi(tournoi)
-
-        if choix_menu == "3":
-            # rajouter le cas ou on veux rajouter un joueur juste apres avoir demarer l'appli et que le tournoi est deja crée
-            try:
-                donnee_joueur = recherche_joueur(joueurs)
-                if donnee_joueur not in tournoi.liste_des_joueurs:
-                    donnees_joueur = (donnee_joueur, 0.0)
-                    tournoi.liste_des_joueurs.append(donnees_joueur)
-                    sauvegard_tournoi(tournoi)
-                elif donnee_joueur in tournoi.liste_des_joueurs:
-                    print(f"Le joueur est deja inscrit au tournoi.")
-            except:
-                tournoi = recuperation_donnees_tournoi()
-                donnee_joueur = recherche_joueur(joueurs)
-                if donnee_joueur not in tournoi.liste_des_joueurs:
-                    donnees_joueur = (donnee_joueur, 0.0)
-                    tournoi.liste_des_joueurs.append(donnees_joueur)
-                    sauvegard_tournoi(tournoi)
-                elif donnee_joueur in tournoi.liste_des_joueurs:
-                    print("Le joueur est deja inscrit au tournoi.")              
-
-        if choix_menu == "4":
-            # lancement du tournoi
-
-            tournoi = recuperation_donnees_tournoi()
-            if len(tournoi.liste_des_joueurs) == 0:
-                recherche_joueur(joueurs)
-            
-            if tournoi.tour_actuel[0] == 0:
-                print("demarage")
-                demarer_tournoi(tournoi)
-            
-            else:
-                continuer_tournoi(tournoi)
-                print("continu")
-
-
+        if choix_menu == "1": # ajout d'un joueur à la base de donnees des joueurs
+            enregistrement_joueur()
+        if choix_menu == "2": # création d'un nouveau tournoi
+            creation_fichier_tournoi()
+            if tournoi != None:
+                sauvegard_tournoi(tournoi)
+        if choix_menu == "3": # Ajoute un joueur au tournoi
+            liste_tournois = liste_des_tournois()
+            if liste_tournois != None and tournoi == None:
+                choix_tournoi = recherche_tournoi(liste_tournois)
+                if choix_tournoi == None:
+                    continue
+                tournoi = recuperation_donnees_tournoi(choix_tournoi)
+            joueurs = ajout_joueur_tournoi(tournoi)
+            liste_des_joueurs.append(joueurs)
+            if tournoi != None:
+                sauvegard_tournoi(tournoi)
+        if choix_menu == "4": # lancement du tournoi
+            liste_tournois = liste_des_tournois()
+            if liste_tournois == None:
+                creation_fichier_tournoi()
+                liste_tournois = liste_des_tournois()
+            if tournoi == None:
+                choix_tournoi = recherche_tournoi(liste_tournois)
+                if choix_tournoi == None:
+                    continue
+                tournoi = recuperation_donnees_tournoi(choix_tournoi)
+            if len(liste_des_joueurs) != len(tournoi.liste_des_joueurs):
+                liste_des_joueurs = recuperation_donnees_joueur(tournoi)
+            if len(liste_des_joueurs) == 0:
+                joueurs = ajout_joueur_tournoi(tournoi)
+                liste_des_joueurs.append(joueurs)
+                sauvegard_tournoi(tournoi)
+                continue
+            if tournoi.tour_actuel == 0:
+                demarer_tournoi(tournoi, liste_des_joueurs)
+            if tournoi.tour_actuel != tournoi.nombre_de_tours:
+                continuer_tournoi(tournoi, liste_des_joueurs)
         if choix_menu == "5":
             # fin de l'application
+            if tournoi != None:
+                sauvegard_tournoi(tournoi)
             return print("Au revoir")
         
 
