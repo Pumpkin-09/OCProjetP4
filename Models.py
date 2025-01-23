@@ -1,7 +1,6 @@
 import random
 
 
-
 class Joueur:
 
     def __init__(self, numero_ine, nom, prenom, date_naissance, score=0.0):
@@ -11,14 +10,16 @@ class Joueur:
         self.prenom = prenom
         self.date_naissance = date_naissance
         self.score = score
-    
+
     def __repr__(self):
         return (f"{self.nom} {self.prenom}, date de naissance:{self.date_naissance} numero INE:{self.numero_ine}\n")
 
 
 class Tournoi:
 
-    def __init__(self, nom, lieu, date_de_debut, date_de_fin, remarque, nombre_de_tours=4, tour_actuel=0, liste_des_joueurs=[], liste_des_tours={"round":{}, "adversaire":[]}):
+    def __init__(self, nom, lieu, date_de_debut, date_de_fin, remarque, nombre_de_tours=4,
+                 tour_actuel=0, liste_des_joueurs=[], liste_des_tours={"round": {}, "adversaire": []}):
+
         self.nom = nom
         self.lieu = lieu
         self.date_de_debut = date_de_debut
@@ -42,13 +43,13 @@ class Match:
             self.joueur_1.score += 1
             score_1 = 1
             score_2 = 0
-        
+
         elif resultat == "2":
-            self.joueur_2.score +=1
+            self.joueur_2.score += 1
             score_1 = 0
             score_2 = 1
-        
-        else: # match nul
+
+        else:  # match nul
             self.joueur_1.score += 0.5
             self.joueur_2.score += 0.5
             score_1 = 0.5
@@ -60,35 +61,38 @@ class Match:
 
 class Tour:
 
-    def __init__ (self, liste_des_joueurs, non_joueur=0):
+    def __init__(self, liste_des_joueurs, non_joueur=0):
         self.liste_des_joueurs = liste_des_joueurs
         self.non_joueur = non_joueur
-    
+
     def randomiseur_tour1(self):
         random.shuffle(self.liste_des_joueurs)
-        
+
     def triage_par_points(self):
         self.liste_des_joueurs.sort(key=lambda item: item.score, reverse=True)
 
-    def association_joueurs(self, tournoi): # rajouter le cas ou tout les match on deja ete jouer!
+    def association_joueurs(self, tournoi):
+        impair = None
         liste_travail = self.liste_des_joueurs.copy()
-        if len(liste_travail)%2 != 0:
+        if len(liste_travail) % 2 != 0:
             impair = random.randint(0, len(liste_travail)-1)
             self.non_joueur = liste_travail[impair]
             del liste_travail[impair]
         i = 1
         liste_de_matchs = []
-        while len(liste_travail) > 0 and i != len(liste_travail):
-            liste_1 = [liste_travail[0].numero_ine, liste_travail[i].numero_ine]
-            liste_2 = [liste_travail[i].numero_ine, liste_travail[0].numero_ine]
-            for ancien_match in tournoi.liste_des_tours["adversaire"]:
-                if liste_1 == ancien_match or liste_2 == ancien_match :
+        try:
+            while len(liste_travail) > 0 and i != len(liste_travail):
+                liste1 = [liste_travail[0].numero_ine, liste_travail[i].numero_ine]
+                liste2 = [liste_travail[i].numero_ine, liste_travail[0].numero_ine]
+                if liste1 in tournoi.liste_des_tours["adversaire"] or liste2 in tournoi.liste_des_tours["adversaire"]:
                     i += 1
-            else :
-                match = [liste_travail[0], liste_travail[i]]
-                liste_de_matchs.append(match)
-                tournoi.liste_des_tours["adversaire"].append(liste_1)
-                del liste_travail[i]
-                del liste_travail[0]
-                i = 1
-        return liste_de_matchs
+                else:
+                    match = [liste_travail[0], liste_travail[i]]
+                    liste_de_matchs.append(match)
+                    tournoi.liste_des_tours["adversaire"].append(liste1)
+                    del liste_travail[i]
+                    del liste_travail[0]
+                    i = 1
+            return liste_de_matchs
+        except IndexError:
+            return None
