@@ -247,17 +247,20 @@ def resume_tournoi():
             liste_joueurs = []
             dossier = "joueurs"
             fichier = "joueurs.json"
-            chemin_fichier = os.path.join(dossier, fichier)
-            with open(chemin_fichier, "r") as f:
-                donnees_joueurs = json.load(f)
-            for ine_joueurs, donnees_joueur in donnees_joueurs.items():
-                joueur = Joueur(donnees_joueur["numero ine"], donnees_joueur["nom"],
-                                donnees_joueur["prenom"], donnees_joueur["date de naissance"])
+            try:
+                chemin_fichier = os.path.join(dossier, fichier)
+                with open(chemin_fichier, "r") as f:
+                    donnees_joueurs = json.load(f)
+                for ine_joueurs, donnees_joueur in donnees_joueurs.items():
+                    joueur = Joueur(donnees_joueur["numero ine"], donnees_joueur["nom"],
+                                    donnees_joueur["prenom"], donnees_joueur["date de naissance"])
 
-                liste_joueurs.append(joueur)
-            liste_triee = sorted(liste_joueurs, key=lambda joueur: joueur.nom)
-            for affichage in liste_triee:
-                print(affichage)
+                    liste_joueurs.append(joueur)
+                liste_triee = sorted(liste_joueurs, key=lambda joueur: joueur.nom)
+                for affichage in liste_triee:
+                    print(affichage)
+            except FileNotFoundError:
+                print("\nPas de joueurs enregistré")
 
         if choix == "2":
             liste_tournois = liste_des_tournois()

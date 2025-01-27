@@ -67,9 +67,9 @@ def nouveau_tournoi():
     print("Veuillez saisir le lieu du tournoi:")
     lieu_tournoi = verification_input(" - ", lambda lieu_tournoi: lieu_tournoi != "")
     print("Veuillez saisir la date de début du tournoi:")
-    date_debut_tournoi = verification_input("(date au format JJ/MM/AAAA)\n - ", verification_date)
+    date_debut_tournoi = verification_input("date au format JJ/MM/AAAA\n - ", verification_date)
     print("Veuillez saisir la date de fin du tournoi:")
-    date_fin_tournoi = verification_input("(date au format JJ/MM/AAAA)\n - ", verification_date)
+    date_fin_tournoi = verification_input("date au format JJ/MM/AAAA\n - ", verification_date)
     choix_remarque = input("Voulez vous ajouter une remarque pour ce tournoi?\nSaisisez Oui ou Non\n")
     if choix_remarque == "oui":
         remarques = []
