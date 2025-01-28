@@ -1,4 +1,6 @@
 import random
+import json
+import os
 
 
 class Joueur:
@@ -29,6 +31,27 @@ class Tournoi:
         self.tour_actuel = tour_actuel
         self.liste_des_joueurs = liste_des_joueurs
         self.liste_des_tours = liste_des_tours
+
+    def sauvegard(self):
+        # Remplacement des anciennes donnees liste des joueurs, tour actuel et liste des tours dans le fichier json
+        joueurs = []
+        dossier = "tournoi"
+        date_nom = self.date_de_debut.replace("/", "")
+        fichier_tournoi = f"tournoi_{self.nom}_{self.lieu}_{date_nom}.json"
+        chemin_fichier = os.path.join(dossier, fichier_tournoi)
+        for joueur in self.liste_des_joueurs:
+            joueur_ine = joueur.numero_ine
+            joueur_score = joueur.score
+            joueurs.append([joueur_ine, joueur_score])
+        with open(chemin_fichier, "r") as f:
+            settings = json.load(f)
+
+        settings["liste des joueurs"] = joueurs
+        settings["tour actuel"] = self.tour_actuel
+        settings["liste des tours"] = self.liste_des_tours
+
+        with open(chemin_fichier, "w") as f:
+            json.dump(settings, f, indent=4)
 
 
 class Match:

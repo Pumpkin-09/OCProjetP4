@@ -27,6 +27,10 @@ def verification_date(date_str):
         return False
 
 
+def affichage_simple(affichage_mot):
+    print(affichage_mot)
+
+
 def quitter():
     while True:
         choix = input("Voulez vous quitter l'application?\nOui\nNon\n")
@@ -108,19 +112,26 @@ def nouveau_joueur(settings):
     return infos_joueur
 
 
-def recherche_joueur(donnees_joueur, nombre_joueur, numero_ine):
-    print("Veuillez saisir le Numero INE du joueur à ajouter au tournoi.")
-    print("Au format suivant: AB suivi de 5 nombres:")
-    joueur_ine = verification_input(" - ", lambda joueur_ine: re.match(r"^AB\d{5}$", joueur_ine))
-    if joueur_ine in numero_ine:
-        print(f"\nLe joueurs {joueur_ine} est déja inscrit au tournoi.")
-        return None
-    if joueur_ine in donnees_joueur:
-        print(f"\nLe joueur est à présent inscrit au tournoi.\nle total de joueurs est de: {nombre_joueur+1}")
-        return joueur_ine
-    else:
-        print("\nAucun joueur correspondant n'a été trouvé.\n")
-        return None
+def recherche_joueur(tournoi, donnees_joueur, numero_ine):
+    joueur = []
+    while True:
+        print(f"Veuillez saisir le Numero INE du joueur à ajouter au tournoi {tournoi.nom}.")
+        print("Au format suivant: AB suivi de 5 nombres")
+        print("Ou entrée 0 pour quitter:")
+        joueur_ine = verification_input(" - ", lambda joueur_ine: re.match(r"^(AB\d{5}|0)$", joueur_ine))
+        if joueur_ine in numero_ine:
+            print(f"\nLe joueurs {joueur_ine} est déja inscrit au tournoi.")
+        if joueur_ine in donnees_joueur:
+            print("\nLe joueur est à présent inscrit au tournoi.")
+            joueur.append(joueur_ine)
+            continue
+        if joueur_ine == "0":
+            if len(joueur) != 0:
+                return joueur
+            else:
+                return None
+        else:
+            print("\nAucun joueur correspondant n'a été trouvé.\n")
 
 
 def affichage_round(tournoi, liste_de_match, date_heure_debut):
@@ -139,15 +150,15 @@ def affichage_round(tournoi, liste_de_match, date_heure_debut):
     input("\nPressez \"Entrée\" pour terminer le Round et definir les gagnants.\n")
 
 
-def affichage_resultat_match(tournoi, liste_des_joueurs, resultat, date_heure_fin, non_joueur):
+def affichage_resultat_match(tournoi, resultat, date_heure_fin, non_joueur):
     clear_terminal()
-    affichage = f"Le Round {tournoi.tour_actuel} en fini.\nvoici le resultat des matchs {date_heure_fin}:\n"
+    affichage = f"Le Round {tournoi.tour_actuel} est fini.\nVoici les resultats des matchs {date_heure_fin}:\n"
     for resultat_round in resultat:
-        for liste in liste_des_joueurs:
+        for liste in tournoi.liste_des_joueurs:
             if resultat_round[0][0] in liste.numero_ine:
                 prenom1 = liste.prenom
                 nom1 = liste.nom
-                ine1 = resultat_round[0][1]
+                ine1 = resultat_round[0][0]
                 score1 = resultat_round[0][1]
             if resultat_round[1][0] in liste.numero_ine:
                 prenom2 = liste.prenom
@@ -192,16 +203,18 @@ def recherche_tournoi(liste_tournois):
 
             except ValueError:
                 print("Saisit invalide, veuillez entrée un nombre.")
+            except IndexError:
+                print(f"saisit invalide, veuillez saisir un nombre compris entre 0 et {i - 1}.")
     else:
-        print("il n'y a aucun tournoi de disponible pour le moment.")
+        print("Il n'y a aucun tournoi de disponible, veuillez en crée un.")
 
 
-def affichage_resumer(tournoi, liste_joueurs):
+def affichage_resumer(tournoi):
     print(f"\nVoici le resumer du tournoi {tournoi.nom} de {tournoi.lieu}:\n")
     print(f"Nombre de tours: {tournoi.nombre_de_tours}\n")
     print(f"Round effectués: {tournoi.tour_actuel}\n")
     print("Liste des joueurs inscrit au tournoi:")
-    liste_triee = sorted(liste_joueurs, key=lambda joueur: joueur.nom)
+    liste_triee = sorted(tournoi.liste_des_joueurs, key=lambda joueur: joueur.nom)
     for affichage_liste in liste_triee:
         print(affichage_liste)
     print("\nRemarque du directeur du tournoi:")
@@ -221,13 +234,13 @@ def choix_resume():
     print("Choisissez une option:")
     print("1. Pour la liste de tous les joueurs")
     print("2. Pour la liste de tous les tournois")
-    choix = input("3. Pour quitter:\n - ")
+    choix = input("0. Pour revenir au Menu:\n - ")
     while True:
         if choix == "1":
             return choix
         if choix == "2":
             return choix
-        if choix == "3":
+        if choix == "0":
             return choix
         else:
             print("Choix invalide, veuillez entrée un nombre compris entre 0 et 3")
@@ -254,9 +267,9 @@ def menu():
         print("3. Ajoute un joueur au tournoi:")
         print("4. Lancer / reprendre le tournoi")
         print("5. Afficher le resumer des données")
-        print("6. Quitter l'applicaiton")
+        print("0. Quitter l'applicaiton")
 
-        choix = input("Saisir 1, 2, 3, 4, 5 ou 6:\n - ")
+        choix = input("Saisir 1, 2, 3, 4, 5 ou 0:\n - ")
 
         if choix == "1":
             clear_terminal()
@@ -270,7 +283,7 @@ def menu():
 
         if choix == "3":
             clear_terminal()
-            print("Ajoute un joueur au tournoi:\n")
+            print("Ajout d'un joueur à un tournoi:\n")
             return choix
 
         if choix == "4":
@@ -283,9 +296,9 @@ def menu():
             print("Résumer des données:\n")
             return choix
 
-        if choix == "6":
+        if choix == "0":
             clear_terminal()
             return choix
 
         else:
-            print("Choix invalide, Réessayer.")
+            print("\nChoix invalide, Réessayer.")
