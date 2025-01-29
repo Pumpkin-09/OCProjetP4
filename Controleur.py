@@ -109,7 +109,7 @@ def liste_des_tournois():
     dossier = "tournoi"
     fichier_json = []
     if not os.path.exists(dossier):
-        mot = "\nAucun tournoi n'a été trouvé, veuillez en crée un."
+        mot = "\nAucun tournoi n'a été trouvé, veuillez en créer un."
         affichage_simple(mot)
         return None
     for fichier in os.listdir(dossier):
@@ -128,12 +128,12 @@ def recuperation_donnees_tournoi(choix_tournoi):
     chemin_joueur = os.path.join(dossier_joueur, fichier_joueur)
 
     if not os.path.exists(chemin_tournoi):
-        affichage_mot = "\nLe tournoi n'as pas été trouvé.\nVeuillez verifier vos données ou crée un nouveau tournoi."
+        affichage_mot = "\nLe tournoi n'a pas été trouvé.\nVeuillez vérifier vos données ou créer un nouveau tournoi."
         affichage_simple(affichage_mot)
         return None
     if not os.path.exists(chemin_joueur):
-        affichage_mot = "\nLa liste des joueurs n'as pas été trouvé."
-        mot_affichage = "Veuillez verifier vos données ou crée un nouveau joueur.\n"
+        affichage_mot = "\nLa liste des joueurs n'a pas été trouvée."
+        mot_affichage = "Veuillez vérifier vos données ou créer un nouveau joueur.\n"
         affichage_simple(affichage_mot)
         affichage_simple(mot_affichage)
         return None
@@ -239,7 +239,7 @@ def resume_donnees():
                 for affichage in liste_triee:
                     affichage_simple(affichage)
             except FileNotFoundError:
-                affichage_mot = "\nPas de joueurs enregistré."
+                affichage_mot = "\nPas de joueur enregistré."
                 affichage_simple(affichage_mot)
                 continue
 
@@ -260,10 +260,10 @@ def main():
     tournoi = None
     while True:
         choix_menu = menu()
-        if choix_menu == "1":  # ajout d'un joueur à la base de donnees des joueurs
+        if choix_menu == "1":  # ajout d'un joueur a la base de donnees des joueurs
             enregistrement_joueur()
 
-        if choix_menu == "2":  # création d'un nouveau tournoi
+        if choix_menu == "2":  # creation d'un nouveau tournoi
             creation_tournoi()
 
         if choix_menu == "3":  # Ajoute un joueur au tournoi
@@ -288,7 +288,7 @@ def main():
                     continue
                 tournoi = recuperation_donnees_tournoi(choix_tournoi)
                 if len(tournoi.liste_des_joueurs) <= 1:
-                    mot = "Moins de deux joueurs sont inscrit à ce tournoi, Veuillez en selectionner."
+                    mot = "Moins de deux joueurs sont inscrits à ce tournoi, Veuillez en selectionner."
                     affichage_simple(mot)
                     non = ajout_joueur_tournoi(tournoi)
                     if non is None:
@@ -304,7 +304,7 @@ def main():
                     affichage_resumer(tournoi)
                     tournoi = None
 
-        if choix_menu == "5":  # affiche le resumer du tournoi choisi
+        if choix_menu == "5":  # affiche le resume du tournoi choisi
             resume_donnees()
 
         if choix_menu == "0":  # fin de l'application
