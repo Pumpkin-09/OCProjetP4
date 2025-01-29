@@ -18,6 +18,7 @@ from Vue import (menu,
                  affichage_resultat_match)
 
 
+
 def enregistrement_joueur():
     dossier = "joueurs"
     fichier = "joueurs.json"

@@ -2,6 +2,7 @@ import datetime
 import re
 
 
+
 def clear_terminal():
     print("\033[2J", end="")
     print(f"\033[{6};{0}H", end="")

@@ -3,6 +3,7 @@ import json
 import os
 
 
+
 class Joueur:
 
     def __init__(self, numero_ine, nom, prenom, date_naissance, score=0.0):
