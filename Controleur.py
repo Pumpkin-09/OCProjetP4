@@ -18,7 +18,6 @@ from Vue import (menu,
                  affichage_resultat_match)
 
 
-
 def enregistrement_joueur():
     dossier = "joueurs"
     fichier = "joueurs.json"
@@ -193,7 +192,7 @@ def continuer_tournoi(tournoi):
         resultat = []
         liste_des_joueurs = tournoi.liste_des_joueurs
         tour_en_cours = Tour(liste_des_joueurs)
-        if tournoi.tour_actuel %2 != 0:
+        if tournoi.tour_actuel % 2 != 0:
             tour_en_cours.triage_par_points_decroissant()
         else:
             tour_en_cours.triage_par_points()

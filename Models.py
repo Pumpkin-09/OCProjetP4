@@ -3,7 +3,6 @@ import json
 import os
 
 
-
 class Joueur:
 
     def __init__(self, numero_ine, nom, prenom, date_naissance, score=0.0):
@@ -94,7 +93,7 @@ class Tour:
 
     def triage_par_points(self):
         self.liste_des_joueurs.sort(key=lambda item: item.score, reverse=True)
-        
+
     def triage_par_points_decroissant(self):
         self.liste_des_joueurs.sort(key=lambda item: item.score)
 
@@ -112,7 +111,8 @@ class Tour:
                 while len(liste_travail) > 0 and i != len(liste_travail):
                     liste1 = [liste_travail[0].numero_ine, liste_travail[i].numero_ine]
                     liste2 = [liste_travail[i].numero_ine, liste_travail[0].numero_ine]
-                    if liste1 in tournoi.liste_des_tours["adversaire"] or liste2 in tournoi.liste_des_tours["adversaire"]:
+                    historique = tournoi.liste_des_tours["adversaire"]
+                    if liste1 in historique or liste2 in historique:
                         i += 1
                     else:
                         match = [liste_travail[0], liste_travail[i]]
