@@ -110,8 +110,8 @@ def liste_des_tournois():
     dossier = "tournoi"
     fichier_json = []
     if not os.path.exists(dossier):
-        mot = "\nAucun tournoi n'a été trouvé, veuillez en créer un."
-        affichage_simple(mot)
+        affichage_mot = "\nAucun tournoi n'a été trouvé, veuillez en créer un."
+        affichage_simple(affichage_mot)
         return None
     for fichier in os.listdir(dossier):
         if fichier.endswith(".json") and "tournoi" in fichier.lower():
@@ -134,9 +134,9 @@ def recuperation_donnees_tournoi(choix_tournoi):
         return None
     if not os.path.exists(chemin_joueur):
         affichage_mot = "\nLa liste des joueurs n'a pas été trouvée."
-        mot_affichage = "Veuillez vérifier vos données ou créer un nouveau joueur.\n"
         affichage_simple(affichage_mot)
-        affichage_simple(mot_affichage)
+        affichage_mot = "Veuillez vérifier vos données ou créer un nouveau joueur.\n"
+        affichage_simple(affichage_mot)
         return None
 
     else:
@@ -191,15 +191,18 @@ def continuer_tournoi(tournoi):
     while tournoi.tour_actuel < tournoi.nombre_de_tours:
         non_joueur = None
         resultat = []
-        tournoi.tour_actuel += 1
         liste_des_joueurs = tournoi.liste_des_joueurs
         tour_en_cours = Tour(liste_des_joueurs)
-        tour_en_cours.triage_par_points()
+        if tournoi.tour_actuel %2 != 0:
+            tour_en_cours.triage_par_points_decroissant()
+        else:
+            tour_en_cours.triage_par_points()
         liste_de_match = tour_en_cours.association_joueurs(tournoi)
-        if liste_de_match is None:
+        if liste_de_match is None or len(liste_de_match) == 0:
             fin_tournoi()
             affichage_resumer(tournoi)
             return
+        tournoi.tour_actuel += 1
         date_heure_debut = recuperation_date_heure()
         affichage_round(tournoi, liste_de_match, date_heure_debut)
         for joueurs_match in liste_de_match:

@@ -122,7 +122,7 @@ def recherche_joueur(tournoi, donnees_joueur, numero_ine):
         joueur_ine = verification_input(" - ", lambda joueur_ine: re.match(r"^(AB\d{5}|0)$", joueur_ine))
         if joueur_ine in numero_ine:
             print(f"\nLe joueur {joueur_ine} est déjà inscrit au tournoi.")
-        if joueur_ine in donnees_joueur:
+        if joueur_ine in donnees_joueur and joueur_ine not in joueur:
             print("\nLe joueur est à présent inscrit au tournoi.")
             joueur.append(joueur_ine)
             continue
@@ -231,12 +231,12 @@ def affichage_resumer(tournoi):
 
 
 def choix_resume():
-    print("\nAffichage des rapports:\n")
-    print("Choisissez une option:")
-    print("1. Pour la liste de tous les joueurs")
-    print("2. Pour la liste de tous les tournois")
-    choix = input("0. Pour revenir au Menu:\n - ")
     while True:
+        print("\nAffichage des rapports:\n")
+        print("Choisissez une option:")
+        print("1. Pour la liste de tous les joueurs")
+        print("2. Pour la liste de tous les tournois")
+        choix = input("0. Pour revenir au Menu:\n - ")
         if choix == "1":
             return choix
         if choix == "2":
@@ -244,7 +244,7 @@ def choix_resume():
         if choix == "0":
             return choix
         else:
-            print("Choix invalide, veuillez entrer un nombre compris entre 0 et 3")
+            print("Choix invalide, veuillez entrer un nombre compris entre 0 et 2")
 
 
 def tour_tournoi_max():

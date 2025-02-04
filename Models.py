@@ -94,29 +94,33 @@ class Tour:
 
     def triage_par_points(self):
         self.liste_des_joueurs.sort(key=lambda item: item.score, reverse=True)
+        
+    def triage_par_points_decroissant(self):
+        self.liste_des_joueurs.sort(key=lambda item: item.score)
 
     def association_joueurs(self, tournoi):
         impair = None
-        liste_travail = self.liste_des_joueurs.copy()
-        if len(liste_travail) % 2 != 0:
-            impair = random.randint(0, len(liste_travail)-1)
-            self.non_joueur = liste_travail[impair]
-            del liste_travail[impair]
-        i = 1
-        liste_de_matchs = []
-        try:
-            while len(liste_travail) > 0 and i != len(liste_travail):
-                liste1 = [liste_travail[0].numero_ine, liste_travail[i].numero_ine]
-                liste2 = [liste_travail[i].numero_ine, liste_travail[0].numero_ine]
-                if liste1 in tournoi.liste_des_tours["adversaire"] or liste2 in tournoi.liste_des_tours["adversaire"]:
-                    i += 1
-                else:
-                    match = [liste_travail[0], liste_travail[i]]
-                    liste_de_matchs.append(match)
-                    tournoi.liste_des_tours["adversaire"].append(liste1)
-                    del liste_travail[i]
-                    del liste_travail[0]
-                    i = 1
-            return liste_de_matchs
-        except IndexError:
-            return None
+        while True:
+            liste_travail = self.liste_des_joueurs.copy()
+            if len(liste_travail) % 2 != 0:
+                impair = random.randint(0, len(liste_travail)-1)
+                self.non_joueur = liste_travail[impair]
+                del liste_travail[impair]
+            i = 1
+            liste_de_matchs = []
+            try:
+                while len(liste_travail) > 0 and i != len(liste_travail):
+                    liste1 = [liste_travail[0].numero_ine, liste_travail[i].numero_ine]
+                    liste2 = [liste_travail[i].numero_ine, liste_travail[0].numero_ine]
+                    if liste1 in tournoi.liste_des_tours["adversaire"] or liste2 in tournoi.liste_des_tours["adversaire"]:
+                        i += 1
+                    else:
+                        match = [liste_travail[0], liste_travail[i]]
+                        liste_de_matchs.append(match)
+                        tournoi.liste_des_tours["adversaire"].append(liste1)
+                        del liste_travail[i]
+                        del liste_travail[0]
+                        i = 1
+                return liste_de_matchs
+            except IndexError:
+                return None
