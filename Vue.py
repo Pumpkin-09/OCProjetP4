@@ -210,6 +210,7 @@ def recherche_tournoi(liste_tournois):
 
 
 def affichage_resumer(tournoi):
+    print("-----------------------------------------------------------------------")
     print(f"\nVoici le résumé du tournoi {tournoi.nom} de {tournoi.lieu}:\n")
     print(f"Nombre de tours: {tournoi.nombre_de_tours}\n")
     print(f"Rounds effectués: {tournoi.tour_actuel}\n")
@@ -227,6 +228,7 @@ def affichage_resumer(tournoi):
             for match in tournoi.liste_des_tours["round"][round]:
                 print(f"Joueur INE {match[0][0]} - {match[0][1]} contre joueur INE {match[1][0]} - {match[1][1]}")
     input("\nPressez \"Entrée\" pour quitter le résumé")
+    print("-----------------------------------------------------------------------")
 
 
 def choix_resume():
@@ -261,13 +263,15 @@ def fin_tournoi():
 def menu():
     while True:
 
-        print("\n\nMenu\nChoisissez une option:")
+        print("\n\n--------------Menu--------------")
+        print("     Choisissez une option:")
         print("1. Création d'un nouveau joueur")
         print("2. Création d'un nouveau tournoi")
         print("3. Ajout d'un joueur au tournoi:")
         print("4. Lancer / reprendre le tournoi")
         print("5. Afficher le resumé des données")
         print("0. Quitter l'applicaiton")
+        print("---------------------------------")
 
         choix = input("Saisir 1, 2, 3, 4, 5 ou 0:\n - ")
 
