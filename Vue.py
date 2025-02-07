@@ -50,12 +50,12 @@ def choix_gagants(joueurs_match):
         nom2 = joueurs_match[1].nom
         prenom2 = joueurs_match[1].prenom
         ine2 = joueurs_match[1].numero_ine
-        print("Sélectionnez le gagnant du match:")
+        print("\nSélectionnez le gagnant du match:")
         print(f"Pour {nom1} {prenom1} numéro INE: {ine1} gagnant, entrez 1")
         print(f"Pour {nom2} {prenom2} numéro INE: {ine2} gagnant, entrez 2")
         print("Pour un match nul, entrez 3:")
 
-        choix = input("\n - ")
+        choix = input(" - ")
         if choix == "1":
             return choix
         if choix == "2":
@@ -75,7 +75,7 @@ def nouveau_tournoi():
     print("Veuillez saisir la date de fin du tournoi:")
     date_fin_tournoi = verification_input("date au format JJ/MM/AAAA\n - ", verification_date)
     choix_remarque = input("Voulez-vous ajouter une remarque pour ce tournoi?\nSaisissez Oui ou Non\n")
-    if choix_remarque == "oui":
+    if re.match(r"^OUI$", choix_remarque, re.I):
         remarques = []
         print("Pour allez à la ligne pressez une fois \"Entrée\".\nPour quitter, presser deux fois \"Entrée\".")
         while True:
@@ -83,15 +83,15 @@ def nouveau_tournoi():
             if remarque == "":
                 break
             remarques.append(remarque)
-    else:
+    if re.match(r"^NON$", choix_remarque, re.I):
         remarques = ["Aucune remarque"]
 
     print("Le nombre de tours pour le tournoi est par défaut de 4.")
     choix_nombre_tour = input("Voulez-vous changer le nombre de tours?\nSaisissez Oui ou Non\n - ")
-    if choix_nombre_tour == "oui":
+    if re.match(r"^OUI$", choix_nombre_tour, re.I):
         nombre_de_tour_str = input("Veuillez saisir le nombre de tours pour ce tournoi:\n - ")
         nombre_de_tour = int(nombre_de_tour_str)
-    else:
+    if re.match(r"^NON$", choix_nombre_tour, re.I):
         nombre_de_tour = 4
     infos_tournoi = (nom_tournoi, lieu_tournoi, date_debut_tournoi, date_fin_tournoi, remarques, nombre_de_tour)
     return infos_tournoi
@@ -119,10 +119,11 @@ def recherche_joueur(tournoi, donnees_joueur, numero_ine):
         print("au format suivant: AB suivi de 5 nombres")
         print("ou entrez 0 pour quitter:")
         joueur_ine = verification_input(" - ", lambda joueur_ine: re.match(r"^(AB\d{5}|0)$", joueur_ine))
-        if joueur_ine in numero_ine:
-            print(f"\nLe joueur {joueur_ine} est déjà inscrit au tournoi.")
+        if joueur_ine in numero_ine or joueur_ine in joueur:
+            print(f"Le joueur {joueur_ine} est déjà inscrit au tournoi.\n\n")
+            continue
         if joueur_ine in donnees_joueur and joueur_ine not in joueur:
-            print("\nLe joueur est à présent inscrit au tournoi.")
+            print("Le joueur est à présent inscrit au tournoi.\n\n")
             joueur.append(joueur_ine)
             continue
         if joueur_ine == "0":
@@ -134,7 +135,7 @@ def recherche_joueur(tournoi, donnees_joueur, numero_ine):
             print("\nAucun joueur correspondant n'a été trouvé.\n")
 
 
-def affichage_round(tournoi, liste_de_match, date_heure_debut):
+def affichage_round(tournoi, liste_de_match, date_heure_debut, non_joueur):
     clear_terminal()
     affichage_round = f"Voici la liste des matchs pour le Round {tournoi.tour_actuel} {date_heure_debut}:\n"
     for match in liste_de_match:
@@ -146,6 +147,14 @@ def affichage_round(tournoi, liste_de_match, date_heure_debut):
         ine2 = match[1].numero_ine
 
         affichage_round += f"\n{prenom1} {nom1} INE {ine1} - contre - {prenom2} {nom2} INE {ine2}\n"
+
+    if non_joueur != 0:
+        prenom = non_joueur.prenom
+        nom = non_joueur.nom
+        ine = non_joueur.numero_ine
+        affichage_round += "\nLe nombre de participants étant impaire:\n"
+        affichage_round += f"Le joueur {prenom} {nom} - numero INE: {ine} ne jouera pas ce Round."
+
     print(affichage_round)
     input("\nPressez \"Entrée\" pour terminer le Round et définir les gagnants.\n")
 
@@ -172,7 +181,7 @@ def affichage_resultat_match(tournoi, resultat, date_heure_fin, non_joueur):
         prenom = non_joueur.prenom
         nom = non_joueur.nom
         ine = non_joueur.numero_ine
-        affichage += "\nLe nombre de participants étant impaire:"
+        affichage += "\nLe nombre de participants étant impaire:\n"
         affichage += f"Le joueur {prenom} {nom} - numero INE: {ine} n'a pas joué ce Round."
     print(affichage)
     input("\nPressez \"Entrée\" pour continuer.\n")
@@ -222,11 +231,23 @@ def affichage_resumer(tournoi):
     for remarque in tournoi.remarque:
         print(remarque)
     if tournoi.tour_actuel >= 1:
-        print("\nVoici le résumé des Rounds du tournoi:\n")
+        print("\nVoici le résumé des Rounds du tournoi:")
         for round in tournoi.liste_des_tours["round"]:
-            print(f"\n{round}")
+            print(f"\n--------\n{round}")
             for match in tournoi.liste_des_tours["round"][round]:
-                print(f"Joueur INE {match[0][0]} - {match[0][1]} contre joueur INE {match[1][0]} - {match[1][1]}")
+                for liste in tournoi.liste_des_joueurs:
+                    if match[0][0] in liste.numero_ine:
+                        prenom1 = liste.prenom
+                        nom1 = liste.nom
+                        ine1 = match[0][0]
+                        score1 = match[0][1]
+                    if match[1][0] in liste.numero_ine:
+                        prenom2 = liste.prenom
+                        nom2 = liste.nom
+                        ine2 = match[1][0]
+                        score2 = match[1][1]
+
+                print(f"{prenom1} {nom1} - {ine1} score: {score1} contre {prenom2} {nom2} - {ine2} score: {score2}")
     input("\nPressez \"Entrée\" pour quitter le résumé")
     print("-----------------------------------------------------------------------")
 

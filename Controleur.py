@@ -18,7 +18,7 @@ from Vue import (menu,
                  affichage_resultat_match)
 
 
-def enregistrement_joueur():
+def creation_joueur():
     dossier = "joueurs"
     fichier = "joueurs.json"
     os.makedirs(dossier, exist_ok=True)
@@ -167,15 +167,15 @@ def demarer_tournoi(tournoi):
     tour_en_cours.randomiseur_tour1()
     liste_de_match = tour_en_cours.association_joueurs(tournoi)
     date_heure_debut = recuperation_date_heure()
-    affichage_round(tournoi, liste_de_match, date_heure_debut)
+    non_joueur = tour_en_cours.non_joueur
+    affichage_round(tournoi, liste_de_match, date_heure_debut, non_joueur)
     for joueurs_match in liste_de_match:
         matchs = Match(joueurs_match)
         gagant = choix_gagants(joueurs_match)
         resultat_match = matchs.attribution_point(gagant)
         resultat.append(resultat_match)
-    non_joueur = tour_en_cours.non_joueur
     date_heure_fin = recuperation_date_heure()
-    numero_round = f"round {tournoi.tour_actuel}, \ndebut:{date_heure_debut}\nfin:{date_heure_fin}\n"
+    numero_round = f"Round {tournoi.tour_actuel} \ndebut:{date_heure_debut}\nfin:{date_heure_fin}\n"
     tournoi.liste_des_tours["round"][numero_round] = resultat
     affichage_resultat_match(tournoi, resultat, date_heure_fin, non_joueur)
     tournoi.sauvegard()
@@ -192,10 +192,7 @@ def continuer_tournoi(tournoi):
         resultat = []
         liste_des_joueurs = tournoi.liste_des_joueurs
         tour_en_cours = Tour(liste_des_joueurs)
-        if tournoi.tour_actuel % 2 != 0:
-            tour_en_cours.triage_par_points_decroissant()
-        else:
-            tour_en_cours.triage_par_points()
+        tour_en_cours.triage_par_points()
         liste_de_match = tour_en_cours.association_joueurs(tournoi)
         if liste_de_match is None or len(liste_de_match) == 0:
             fin_tournoi()
@@ -203,15 +200,15 @@ def continuer_tournoi(tournoi):
             return
         tournoi.tour_actuel += 1
         date_heure_debut = recuperation_date_heure()
-        affichage_round(tournoi, liste_de_match, date_heure_debut)
+        non_joueur = tour_en_cours.non_joueur
+        affichage_round(tournoi, liste_de_match, date_heure_debut, non_joueur)
         for joueurs_match in liste_de_match:
             matchs = Match(joueurs_match)
             gagant = choix_gagants(joueurs_match)
             resultat_match = matchs.attribution_point(gagant)
             resultat.append(resultat_match)
-        non_joueur = tour_en_cours.non_joueur
         date_heure_fin = recuperation_date_heure()
-        numero_round = f"round {tournoi.tour_actuel}, \ndebut:{date_heure_debut}\nfin:{date_heure_fin}\n"
+        numero_round = f"Round {tournoi.tour_actuel} \ndebut:{date_heure_debut}\nfin:{date_heure_fin}\n"
         tournoi.liste_des_tours["round"][numero_round] = resultat
         affichage_resultat_match(tournoi, resultat, date_heure_fin, non_joueur)
         tournoi.sauvegard()
@@ -239,6 +236,10 @@ def resume_donnees():
 
                     liste_joueurs.append(joueur)
                 liste_triee = sorted(liste_joueurs, key=lambda joueur: joueur.nom)
+                affichage_mot = "\n----------------------------------------"
+                affichage_simple(affichage_mot)
+                affichage_mot = "\nVoici la liste de tous les joueurs:"
+                affichage_simple(affichage_mot)
                 for affichage in liste_triee:
                     affichage_simple(affichage)
             except FileNotFoundError:
@@ -264,7 +265,7 @@ def main():
     while True:
         choix_menu = menu()
         if choix_menu == "1":  # ajout d'un joueur a la base de donnees des joueurs
-            enregistrement_joueur()
+            creation_joueur()
 
         if choix_menu == "2":  # creation d'un nouveau tournoi
             creation_tournoi()
@@ -291,7 +292,7 @@ def main():
                     continue
                 tournoi = recuperation_donnees_tournoi(choix_tournoi)
                 if len(tournoi.liste_des_joueurs) <= 1:
-                    mot = "Moins de deux joueurs sont inscrits à ce tournoi, Veuillez en selectionner."
+                    mot = "\nMoins de deux joueurs sont inscrits à ce tournoi, Veuillez en selectionner.\n"
                     affichage_simple(mot)
                     non = ajout_joueur_tournoi(tournoi)
                     if non is None:

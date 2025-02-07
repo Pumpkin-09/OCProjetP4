@@ -94,9 +94,6 @@ class Tour:
     def triage_par_points(self):
         self.liste_des_joueurs.sort(key=lambda item: item.score, reverse=True)
 
-    def triage_par_points_decroissant(self):
-        self.liste_des_joueurs.sort(key=lambda item: item.score)
-
     def association_joueurs(self, tournoi):
         impair = None
         while True:
