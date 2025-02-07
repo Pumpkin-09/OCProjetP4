@@ -61,27 +61,27 @@ Et voilà, vous pouvez maintenant lancer le script grâce à la commande qui sui
 `python Controleur.py`
 
 
-#### Vérification de conformiter avec Flake8:
-Afin de générer un nouveau rapport flake8 en HTML qui vérifie la conformiter PEP 8 avec l'option de longueur de ligne maximale fixée à 119 du code, il suffit, apres avoir activer l'environement virtuel, d'utiliser la commande qui suit dans le terminal:
+#### Vérification de conformité avec Flake8:
+Afin de générer un nouveau rapport flake8 en HTML qui vérifie la conformiter PEP 8 avec l'option de longueur de ligne fixée à 119, il suffit, apres avoir activé l'environement virtuel, d'utiliser la commande qui suit dans le terminal:
 
 `flake8 --format=html --htmldir=flake8-rapport`
 
-le rapport sera allors disponible dans le repertoir source du programe dans le dossier "flake8-rapport".
+le rapport sera allors disponible dans le repertoir source du programe, dans le dossier "flake8-rapport".
 
 
 ## Fonctionnement:
-Une fois l'instalation faire et le programme exécuter, il permet de crée un, ou plusieurs, nouveau tournoi et d'ajouté des nouveaux joueur à la base de données générale.
-Joueur qui peux par la suite, via son numéro INE, être ajouté diréctement à un tournoi précédemment créer. Les tournois sont crée avec un nombre de rounds par défaut de 4. Ce nombre est modifiable lors la création du tournoi.
-En cas de nombre de participants impaire, le programme décideras aléatoirement à chaque round quel joueur ne participeras pas aux matchs.
+Une fois l'instalation effectuée et le programme exécuté, il permet de créer un, ou plusieurs, nouveaux tournois et d'ajouter de nouveaux joueur à la base de données générale.
+Les joueur peuvent ensuite, via leur numéro INE, être ajoutés diréctement à un tournoi précédemment créé. Les tournois sont créés avec un nombre de rounds par défaut de 4. Ce nombre est modifiable lors la création du tournoi.
+En cas de nombre de participants impair, le programme décidera aléatoirement à chaque round quel joueur ne participera pas aux matchs.
 
 ### Lancement ou reprise d’un tournoi:
-Une fois le tournoi crée et les participants ajouter, il suffit de choisir dans la liste le tournoi désirer afin de le commencer. Les matchs du premiers round seront alors affichés à l’écran.
-Une fois tout les matchs de ce round fini, la suite du programme nécessite de désigner les gagnants des différents matchs via une saisit au clavier.
-Une fois cela fait, un résumer sommaire du round s’affiche alors a l’écran.
-À cette instant, et a chaque fois qu’un round est terminer, l’utilisateur va avoir le choix entre arrêter le tournoi et le reprendre plus tard, ou le continuer.
-Pour reprendre un tournoi qui a été précédemment arrété, il suffit de lancer l’application, de choisir « Lancer / reprendre le tournoi » et de sélectionner le tournoi désirer.
+Une fois le tournoi créé et les participants ajoutés, il suffit de choisir dans la liste le tournoi désiré afin de le commencer. Les matchs du premier round seront alors affichés à l’écran.
+Une fois tous les matchs de ce round terminés, la suite du programme nécessite de désigner les gagnants des différents matchs via une saisit au clavier.
+Une fois cela fait, un résumé du round s’affiche alors a l’écran.
+À cet instant, et à chaque fois qu’un round est terminé, l’utilisateur aura le choix entre arrêter le tournoi et le reprendre plus tard, ou le continuer.
+Pour reprendre un tournoi qui a été précédemment arrété, il suffit de lancer l’application, de choisir « Lancer / reprendre le tournoi » et de sélectionner le tournoi désiré.
 
-### Affichage du résumer:
-Il est possible d’afficher la liste complète des joueurs ainsi que des données des différents tournois, non commencer comme déjà fini. Pour ce faire il suffit de choisir l’option dans le menu du programme.
+### Affichage du résumé:
+Il est possible d’afficher la liste complète des joueurs ainsi que des données des différents tournois, non commencés comme déjà finis. Pour ce faire, il suffit de choisir l’option dans le menu du programme.
 
 
