@@ -53,12 +53,12 @@ Il ne reste plus qu'à utiliser la commande suivante:
 Et voilà, vous pouvez maintenant lancer le script grâce à la commande qui suit:
 ##### Sous linux et mac:
 
-`python3 Controleur.py`
+`python3 Main.py`
 
 
 ##### Sous windows:
 
-`python Controleur.py`
+`python Main.py`
 
 
 #### Vérification de conformité avec Flake8:
