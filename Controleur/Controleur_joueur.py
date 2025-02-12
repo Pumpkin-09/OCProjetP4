@@ -52,7 +52,7 @@ class ControleJoueur:
                             "prenom": infos_joueur[1],
                             "date de naissance": infos_joueur[2],
                             "numero ine": infos_joueur[3]}
-                    }
+                      }
             settings.update(joueur)
             with open(chemin_fichier, "w") as f:
                 json.dump(settings, f, indent=4)

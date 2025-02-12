@@ -28,6 +28,7 @@ class Match:
         resultat = ([self.joueur_1.numero_ine, score_1], [self.joueur_2.numero_ine, score_2])
         return tuple(resultat)
 
+
 class Tour:
 
     def __init__(self, liste_des_joueurs, non_joueur=0):

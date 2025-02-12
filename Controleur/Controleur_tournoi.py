@@ -6,7 +6,6 @@ from Models.Models_round import Tour, Match
 from Vue.Vue_tournoi import AffichageTournoi
 from Vue.Vue_round import AffichageRound
 from Vue.Vue_menu import AffichageMenu
-from Controleur.Controleur_joueur import ControleJoueur
 
 
 class ControleTournoi:
@@ -49,10 +48,12 @@ class ControleTournoi:
         dossier_tournoi = "tournoi"
         if choix_tournoi is None:
             return None
-        
+
         chemin_tournoi = os.path.join(dossier_tournoi, choix_tournoi)
         if not os.path.exists(chemin_tournoi):
-            affichage_mot = "\nLe tournoi n'a pas été trouvé.\nVeuillez vérifier vos données ou créer un nouveau tournoi."
+            affichage_mot = "\nLe tournoi n'a pas été trouvé."
+            AffichageRound.affichage_simple(affichage_mot)
+            affichage_mot = "Veuillez vérifier vos données ou créer un nouveau tournoi."
             AffichageRound.affichage_simple(affichage_mot)
             return None
 
@@ -70,9 +71,10 @@ class ControleTournoi:
                     liste_des_joueurs.append(joueur)
 
             tournoi = Tournoi(settings["nom"], settings["lieu"], settings["date de debut"], settings["date de fin"],
-                            settings["remarque"], settings["nombre de tours"], settings["tour actuel"],
-                            liste_des_joueurs, settings["liste des tours"])
+                              settings["remarque"], settings["nombre de tours"], settings["tour actuel"],
+                              liste_des_joueurs, settings["liste des tours"])
             return tournoi
+
 
 class DonneesTournoi:
 

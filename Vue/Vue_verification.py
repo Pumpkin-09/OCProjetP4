@@ -1,6 +1,8 @@
 import datetime
 
+
 class AffichageVerification:
+
     @staticmethod
     def clear_terminal():
         print("\033[2J", end="")

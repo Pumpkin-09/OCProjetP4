@@ -29,13 +29,16 @@ class AffichageTournoi:
 
     @staticmethod
     def nouveau_tournoi():
-        nom_tournoi = AffichageVerification.verification_input("Veuillez saisir le nom du tournoi:\n - ", lambda nom_tournoi: nom_tournoi != "")
+        print("Veuillez saisir le nom du tournoi:")
+        nom_tournoi = AffichageVerification.verification_input(" - ", lambda nom_tournoi: nom_tournoi != "")
         print("Veuillez saisir le lieu du tournoi:")
         lieu_tournoi = AffichageVerification.verification_input(" - ", lambda lieu_tournoi: lieu_tournoi != "")
         print("Veuillez saisir la date de début du tournoi:")
-        date_debut_tournoi = AffichageVerification.verification_input("date au format JJ/MM/AAAA\n - ", AffichageVerification.verification_date)
+        print("date au format JJ/MM/AAAA")
+        date_debut_tournoi = AffichageVerification.verification_input(" - ", AffichageVerification.verification_date)
         print("Veuillez saisir la date de fin du tournoi:")
-        date_fin_tournoi = AffichageVerification.verification_input("date au format JJ/MM/AAAA\n - ", AffichageVerification.verification_date)
+        print("date au format JJ/MM/AAAA")
+        date_fin_tournoi = AffichageVerification.verification_input(" - ", AffichageVerification.verification_date)
         choix_remarque = input("Voulez-vous ajouter une remarque pour ce tournoi?\nSaisissez Oui ou Non\n")
         if re.match(r"^OUI$", choix_remarque, re.I):
             remarques = []

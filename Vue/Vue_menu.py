@@ -1,6 +1,7 @@
 import re
 from Vue.Vue_verification import AffichageVerification
 
+
 class AffichageMenu:
 
     @staticmethod

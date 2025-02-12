@@ -2,7 +2,7 @@ from Vue.Vue_verification import AffichageVerification
 
 
 class AffichageRound:
-    
+
     @staticmethod
     def affichage_simple(affichage_mot):
         print(affichage_mot)
@@ -41,14 +41,14 @@ class AffichageRound:
                     prenom1 = liste.prenom
                     nom1 = liste.nom
                     ine1 = resultat_round[0][0]
-                    score1 = resultat_round[0][1]
+                    scor1 = resultat_round[0][1]
                 if resultat_round[1][0] in liste.numero_ine:
                     prenom2 = liste.prenom
                     nom2 = liste.nom
                     ine2 = resultat_round[1][0]
-                    score2 = resultat_round[1][1]
+                    scor2 = resultat_round[1][1]
 
-            affichage += f"\n{prenom1} {nom1} - {ine1} score: {score1} contre {prenom2} {nom2} - {ine2} score: {score2}\n"
+            affichage += f"\n{prenom1} {nom1} {ine1} score: {scor1} contre {prenom2} {nom2} {ine2} score: {scor2}\n"
 
         if non_joueur != 0:
             prenom = non_joueur.prenom
@@ -82,13 +82,13 @@ class AffichageRound:
                             prenom1 = liste.prenom
                             nom1 = liste.nom
                             ine1 = match[0][0]
-                            score1 = match[0][1]
+                            scor1 = match[0][1]
                         if match[1][0] in liste.numero_ine:
                             prenom2 = liste.prenom
                             nom2 = liste.nom
                             ine2 = match[1][0]
-                            score2 = match[1][1]
+                            scor2 = match[1][1]
 
-                    print(f"{prenom1} {nom1} - {ine1} score: {score1} contre {prenom2} {nom2} - {ine2} score: {score2}")
+                    print(f"{prenom1} {nom1} - {ine1} score: {scor1} contre {prenom2} {nom2} - {ine2} score: {scor2}")
         input("\nPressez \"Entrée\" pour quitter le résumé")
         print("-----------------------------------------------------------------------")

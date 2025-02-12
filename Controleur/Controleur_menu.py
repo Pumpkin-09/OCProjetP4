@@ -10,7 +10,7 @@ class MenuControleur:
 
     def __init__(self):
         self.donnees_joueur = ControleJoueur.donnees_joueurs()
-        
+
     def main_menu(self):
         tournoi = None
         while True:
@@ -25,11 +25,11 @@ class MenuControleur:
             if choix_menu == "3":  # Ajoute un joueur au tournoi
                 tournoi = None
                 controle_tournoi = ControleTournoi(self.donnees_joueur)
-                liste_tournois = DonneesTournoi.liste_des_tournois()
-                tournoi = controle_tournoi.recuperation_donnees_tournoi(AffichageTournoi.recherche_tournoi(liste_tournois))
+                liste = DonneesTournoi.liste_des_tournois()
+                tournoi = controle_tournoi.recuperation_donnees_tournoi(AffichageTournoi.recherche_tournoi(liste))
                 if tournoi is None:
                     continue
-                ajout_joueur = ControleJoueur.ajout_joueur_tournoi(tournoi)
+                ControleJoueur.ajout_joueur_tournoi(tournoi)
                 # tournoi.sauvegard()
 
             if choix_menu == "4":  # lancement du tournoi
@@ -52,10 +52,10 @@ class MenuControleur:
                             continue
                         tournoi.sauvegard()
                     if tournoi.tour_actuel == 0:
-                        execution_tournoi = ExecutionTournoi.demarer_tournoi(tournoi)
+                        ExecutionTournoi.demarer_tournoi(tournoi)
                     if tournoi.tour_actuel != tournoi.nombre_de_tours:
                         AffichageRound.affichage_resumer(tournoi)
-                        execution_tournoi = ExecutionTournoi.continuer_tournoi(tournoi)
+                        ExecutionTournoi.continuer_tournoi(tournoi)
                     if tournoi.tour_actuel == tournoi.nombre_de_tours:
                         AffichageTournoi.tour_tournoi_max()
                         AffichageRound.affichage_resumer(tournoi)

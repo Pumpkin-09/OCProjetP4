@@ -1,11 +1,7 @@
-import os
-import json
-from Vue.Vue_menu import AffichageMenu
 from Vue.Vue_round import AffichageRound
 from Vue.Vue_tournoi import AffichageTournoi
 from Models.Models_donnees import Joueur
-from Controleur.Controleur_tournoi import DonneesTournoi, ControleTournoi
-from Controleur.Controleur_joueur import ControleJoueur
+from Controleur.Controleur_tournoi import ControleTournoi
 
 
 class Rapport:
@@ -22,12 +18,12 @@ class Rapport:
                     affichage_mot = "\nPas de joueur enregistré."
                     AffichageRound.affichage_simple(affichage_mot)
                     break
-                
+
                 if len(self.donnees_joueurs) == 0:
                     affichage_mot = "\nPas de joueur enregistré."
                     AffichageRound.affichage_simple(affichage_mot)
-                    break                    
-                
+                    break
+
                 for ine_joueurs, donnees_joueur in self.donnees_joueurs.items():
                     joueur = Joueur(donnees_joueur["numero ine"], donnees_joueur["nom"],
                                     donnees_joueur["prenom"], donnees_joueur["date de naissance"])
@@ -41,7 +37,7 @@ class Rapport:
                 for affichage in liste_triee:
                     AffichageRound.affichage_simple(affichage)
                 break
-            
+
             if self.choix == "2":
                 if self.liste_des_tournois is None:
                     break
